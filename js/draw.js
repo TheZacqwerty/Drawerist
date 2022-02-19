@@ -14,6 +14,7 @@ const rect = canvas.getBoundingClientRect();
 //Variables
 var mouseX = 0;
 var mouseY = 0;
+var size = 10;
 var color = "#FF0000"
 var mode = true;
 
@@ -26,7 +27,7 @@ function draw(){
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(mouseX, mouseY);
-    ctx.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+    ctx.arc(mouseX, mouseY, size, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
 }
@@ -35,7 +36,7 @@ function erase(){
     ctx.fillStyle = 'white';
     ctx.beginPath();
     ctx.moveTo(mouseX, mouseY);
-    ctx.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+    ctx.arc(mouseX, mouseY, size, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
 }
@@ -81,7 +82,11 @@ onmousemove = function(e){
 sizeInp.oninput = function(){
     if (sizeInp.value == "" || parseInt(sizeInp.value) < 1) sizeInp.value = 1;
 
-    if (parseInt(sizeInp.value) > 50) sizeInp.value = 999;
+    if (parseInt(sizeInp.value) > 50) sizeInp.value = 50;
+
+    if (!isNaN(parseInt(sizeInp.value))){
+        size = parseInt(sizeInp.value)
+    }
 }
 
 colorInp.onchange = function(){
@@ -102,6 +107,7 @@ window.addEventListener("resize", () => {
 
 //Init Commands
 colorInp.value = color;
+sizeInp.value = size;
 
 penBtn.onclick = function(){
     mode = true;
