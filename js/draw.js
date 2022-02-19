@@ -1,14 +1,28 @@
+//Constant Variable
 const text = document.getElementById("test")
 const canvas = document.getElementById("canvas")
 const colorInp = document.getElementById("clrInp");
 const sizeInp = document.getElementById("sizeInp")
+
+const penBtn = document.getElementById("pen");
+const eraseBtn = document.getElementById("erase");
+const clrBtn = document.getElementById("clear");
+
 const ctx = canvas.getContext('2d');
 const rect = canvas.getBoundingClientRect();
+
+//Variables
 var mouseX = 0;
 var mouseY = 0;
 var color = "#FF0000"
+var mode = true;
 
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+//Functions
 function draw(){
+    console.log(color)
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(mouseX, mouseY);
@@ -27,6 +41,7 @@ function erase(){
 }
 
 function clear() {
+    console.log()
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 }
 
@@ -35,7 +50,13 @@ function holdit(btn, start, speedup) {
     var t;
 
     var repeat = function () {
-        draw();
+        if (mode){
+            draw()
+        } else {
+            erase();
+        }
+
+        console.log(mode);
         t = setTimeout(repeat, start);
         start = start / speedup;
     }
@@ -51,15 +72,25 @@ function holdit(btn, start, speedup) {
 
 holdit(canvas, 100, 10)
 
+//Checkings
 onmousemove = function(e){
-    mouseX = (e.screenX - rect.left)
-    mouseY = (e.screenY - rect.top - 70)
+    mouseX = (e.screenX - rect.left) * (canvas.width/rect.width)
+    mouseY = (e.screenY - rect.top -70) * (canvas.height/rect.height)
 }
 
 sizeInp.oninput = function(){
-    if (sizeInp.value == "" || parseInt(sizeInp.value) < 1) orderQ.value = 1;
+    if (sizeInp.value == "" || parseInt(sizeInp.value) < 1) sizeInp.value = 1;
 
-    if (parseInt(sizeInp.value) > 50) orderQ.value = 999;
+    if (parseInt(sizeInp.value) > 50) sizeInp.value = 999;
+}
+
+colorInp.onchange = function(){
+    var reg=/^#([0-9a-f]{3}){1,2}$/i;
+    if (reg.test(colorInp.value)){
+        color = colorInp.value
+    } else {
+        colorInp.value = color;
+    }
 }
 
 window.addEventListener("resize", () => {
@@ -67,5 +98,19 @@ window.addEventListener("resize", () => {
     canvas.height = innerHeight;
     ctx.strokeStyle = "white";
     ctx.fillStyle = "white";
-    init(75);
 })
+
+//Init Commands
+colorInp.value = color;
+
+penBtn.onclick = function(){
+    mode = true;
+}
+
+eraseBtn.onclick = function(){
+    mode = false;
+}
+
+clrBtn.onclick = function(){
+    clear();
+}
